@@ -1,0 +1,120 @@
+/***
+ * file name : musicNote.css
+ * description : musicNote style file
+ * create date : 2018-05-17
+ * creator : saltgamer
+ ***/
+
+.audioPlayer {
+    position: absolute;
+    top: 30px;
+    left: 350px;
+    width: 500px;
+    height: 30px;
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    overflow: hidden;
+    background-color: #333;
+    border-radius: 5px;
+}
+
+.audioPlayer > .bar {
+    position: absolute;
+    top: 0;
+    /*width: 100%;*/
+    height: 20px;
+    user-select: none;
+}
+
+.audioPlayer > .bar > .progress {
+    position: absolute;
+    top: 9px;
+    left: 50px;
+    width: 180px;
+    height: 10px;
+}
+
+.audioPlayer > .bar > .progress > .progress_bar {
+    height: 100%;
+    background-color: #EEEEEE;
+    cursor: pointer;
+}
+.audioPlayer > .bar > .progress > .progress_bar > .slider-horiz__track {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+}
+
+.audioPlayer > .bar > .progress > .progress_bar > .slider-horiz__track > .slider-horiz__filled {
+    height: 100%;
+    border-radius: 0;
+    background-color: #ff9900;
+
+}
+
+.audioPlayer > .bar > .progress > .progress_bar > .slider-horiz__track > .slider-horiz__filled > .slider-horiz__handle {
+    position: relative;
+    top: -2px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+
+.audioPlayer > .bar > .controls {
+    user-select: none;
+    padding-left: 15px;
+    display: flex;
+}
+
+
+.audioPlayer > .bar > .controls >.controlsPlayButton {
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    background-image: url('../images/play.svg');
+    background-repeat: no-repeat;
+
+}
+
+.audioPlayer > .bar > .controls >.controlsPauseyButton {
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    background-image: url('../images/pause.svg');
+    background-repeat: no-repeat;
+
+}
+
+.audioPlayer > .bar > .controls >.controlsStopButton {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+    left: 190px;
+
+    background-image: url('../images/stop.svg');
+    background-repeat: no-repeat;
+
+}
+
+
+
+
+
+

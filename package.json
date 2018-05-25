@@ -1,0 +1,27 @@
+{
+  "name": "musicnote",
+  "version": "0.0.1",
+  "description": "Music Note for svg musical noet",
+  "private": true,
+  "scripts": {
+    "test": "test",
+    "build": "webpack"
+  },
+  "keywords": [
+    "music noet svg "
+  ],
+  "author": "saltgamer",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15",
+    "whatwg-fetch": "^2.0.4"
+  }
+}
