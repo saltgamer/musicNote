@@ -7,7 +7,9 @@
 
 export default class NoteSync {
     constructor(syncInfo) {
-        this.svgElement = document.querySelector('#' + syncInfo.svgId);
+        // this.svgElement = document.querySelector('#' + syncInfo.svgs[0]);
+        this.svgs = syncInfo.svgs;
+        this.svgElement = document;
         this.noteKey = syncInfo.noteKey;
         this.barGroupKey = syncInfo.barGroupKey;
         this.fillColor = syncInfo.fillColor;
@@ -17,6 +19,8 @@ export default class NoteSync {
         this.noteSyncData = syncInfo.noteSyncData;
         this.speedAdjust = syncInfo.speedAdjust;
 
+        this.mode = syncInfo.mode;
+
         this.currentTime = 0;
         this.currentIndex = 0;
 
@@ -24,18 +28,21 @@ export default class NoteSync {
 
         this.beat = ((this.endTime - this.startTime) / this.noteCount) + this.speedAdjust;
 
+        this.initNote();
         this.initSync();
 
         console.log('- noteCount: ', this.noteCount);
         console.log('- beat: ', this.beat);
 
         this.syncPause = false;
-
         this.noteMap = new Map();
         // this.playedNote = new Map();
 
         this.initNoteMap();
         console.log('-- noteMap: ', this.noteMap);
+
+        this.onScroll = false;
+
 
 
     }
@@ -103,6 +110,13 @@ export default class NoteSync {
 
     onSymbol(target) {
         this.svgElement.querySelector('#' + target).style.fill = this.fillColor;
+
+        if (this.mode === 'scroll' && !this.onScroll) {
+
+            setTimeout(() => {
+                window.location = '#' + target;
+            }, 100);
+        }
 
        /* this.playedNote.set(target, {
             element: this.svgElement.querySelector('#' + target),
@@ -173,7 +187,9 @@ export default class NoteSync {
 
         this.noteChecker();
 
-        if (!this.syncPause) {
+        this.onScroll = false;
+
+        if (!this.syncPause || this.player._playback.playing) {
             setTimeout(() => {
                 window.requestAnimationFrame(this.render.bind(this));
             }, 1000 / 20);
@@ -189,7 +205,20 @@ export default class NoteSync {
         });
     }
 
+    initNote() {
+        let index = 0;
+        this.svgs.forEach((value, idx) => {
+            const svgElement = document.querySelector('#' + value);
+            const bar = svgElement.querySelector('#bar_' + (idx + 1));
 
+           for (let i = 0; i < bar.childNodes.length; i++) {
+               if (bar.childNodes[i].nodeName !== '#text') {
+                   bar.childNodes[i].setAttribute('id', this.getNoteId(index));
+                   index++;
+               }
+           }
+        });
+    }
 
 
 }
