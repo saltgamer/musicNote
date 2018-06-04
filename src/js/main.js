@@ -15,6 +15,7 @@ window.musicNote = function (params) {
     const player = new AudioPlayer(params.tracks, {});
     const noteSync = new NoteSync(params.syncInfo);
 
+
     initControls(params.target, player, noteSync);
 
 };

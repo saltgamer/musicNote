@@ -107,6 +107,12 @@ export function initControls (target, player, noteSync) {
         noteSync.initSync();
     });
 
+    document.addEventListener('scroll', () => {
+        console.log('-> scroll!');
+        noteSync.onScroll = true;
+
+    });
+
 
 
 }
