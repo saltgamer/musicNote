@@ -11,7 +11,6 @@ export default class NoteSync {
         this.svgs = syncInfo.svgs;
         this.svgElement = document;
         this.noteKey = syncInfo.noteKey;
-        this.barGroupKey = syncInfo.barGroupKey;
         this.fillColor = syncInfo.fillColor;
         this.startTime = syncInfo.start;
         this.endTime = syncInfo.end;
@@ -23,9 +22,9 @@ export default class NoteSync {
 
         this.currentTime = 0;
         this.currentIndex = 0;
+        this.currentNote = this.noteKey + '001';
 
         this.player = null;
-        this.isLoaded = false;
 
         this.beat = ((this.endTime - this.startTime) / this.noteCount) + this.speedAdjust;
 
@@ -39,15 +38,16 @@ export default class NoteSync {
         this.noteMap = new Map();
         // this.playedNote = new Map();
 
-        this.initNoteMap();
-        console.log('-- noteMap: ', this.noteMap);
 
         this.onScroll = false;
 
         this.sections = syncInfo.sections;
         this.currentSection = 1;
-        this.sectionStart = 0;
         this.sectionEnd = this.endTime;
+
+        this.initNoteMap();
+        console.log('-- noteMap: ', this.noteMap);
+
 
 
     }
@@ -73,9 +73,15 @@ export default class NoteSync {
                 index: idx,
                 duration: value,
                 syncStart: _start,
-                syncEnd: _end
+                syncEnd: _end,
+                section: this.getCurrentSection(target)
             });
         });
+
+        if (this.mode === 'split') {
+            this.showSVG([1, 2]);
+        }
+
     }
 
     initNote() {
@@ -97,7 +103,6 @@ export default class NoteSync {
 
         const start = this.sections[this.currentSection - 1];
         console.log('- start: ', start);
-
         console.log(this.noteMap.get(start));
 
         const end = this.getPrevNoteId(this.sections[this.currentSection]);
@@ -115,6 +120,57 @@ export default class NoteSync {
 
         this.player.move(this.currentTime);
         this.changeSync();
+
+    }
+
+    showSVG(index) {
+        this.svgs.forEach((value, idx) => {
+            this.svgElement.querySelector('#' + value).style.display = 'none';
+        });
+
+        index.forEach(value => {
+            this.svgElement.querySelector('#' + this.svgs[value - 1]).style.display = 'block';
+        });
+
+    }
+
+    changeSVG() {
+        this.showSVG(this.getSectionGroup());
+    }
+
+    getSectionGroup() {
+        const note = this.noteMap.get(this.currentNote);
+        // console.log('- section: ', section % 2);
+        if (note.section % 2 === 1) {
+            return [note.section, note.section + 1];
+        } else {
+            return [note.section-1, note.section];
+        }
+
+    }
+
+    getCurrentSection(noteId) {
+        let start, end, currentNote, result;
+        this.svgs.forEach((value, idx) => {
+            start = this.sections[idx];
+            end = this.getPrevNoteId(this.sections[idx + 1]);
+
+            start = start.split('_')[1];
+            end = end.split('_')[1];
+            currentNote = noteId.split('_')[1];
+
+           /* console.log('--------------------------------------------');
+            console.log('- noteId: ', noteId);
+            console.log('- start: ', start);
+            console.log('- end: ', end);
+            console.log('--------------------------------------------');*/
+
+            if (parseInt(start) <= parseInt(currentNote) && parseInt(end) >= parseInt(currentNote)) {
+                result = idx + 1;
+            }
+        });
+
+        return result;
 
     }
 
@@ -158,6 +214,10 @@ export default class NoteSync {
             this.endSync();
         }
 
+        if (this.mode === 'split') {
+            this.changeSVG();
+        }
+
     }
 
     onSymbol(target) {
@@ -173,6 +233,7 @@ export default class NoteSync {
                 }, 100);
             }
         }
+        this.currentNote = target;
 
         /* this.playedNote.set(target, {
              element: this.svgElement.querySelector('#' + target),
@@ -254,6 +315,11 @@ export default class NoteSync {
         this.currentIndex = value.index;
         this.currentSyncStart = value.syncStart;
         this.currentSyncEnd = value.syncEnd;
+
+
+       /* if (this.mode === 'split') {
+            this.changeSVG(value.section);
+        }*/
     }
 
 

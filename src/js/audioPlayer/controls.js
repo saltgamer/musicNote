@@ -133,10 +133,6 @@ export function initControls (target, player, noteSync) {
 
         noteSync.initSection();
 
-        // setTimeout(() => {
-        //     noteSync.initSection();
-        // }, 400);
-
     });
 
 

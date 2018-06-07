@@ -12,7 +12,7 @@
         <h1>Music Note ver 0.0.3</h1>
         <div class="audioPlayer"></div>
 
-        <div id="svg01">
+        <div id="svg01" style="display: none;">
 			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 				 viewBox="2.167 26.833 466 66" enable-background="new 2.167 26.833 466 66" xml:space="preserve">
 
@@ -543,7 +543,7 @@
 
 			</svg>
         </div>
-        <div id="svg02">
+        <div id="svg02" style="display: none;">
 			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 				 viewBox="2.167 26.833 466 66" enable-background="new 2.167 26.833 466 66" xml:space="preserve">
 
@@ -1111,7 +1111,7 @@
 
 			</svg>
         </div>
-        <div id="svg03">
+        <div id="svg03" style="display: none;">
 			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 				 viewBox="2.167 26.833 466 66" enable-background="new 2.167 26.833 466 66" xml:space="preserve">
 
@@ -1624,7 +1624,7 @@
 
 			</svg>
         </div>
-        <div id="svg04">
+        <div id="svg04" style="display: none;">
 			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 				 viewBox="2.167 26.833 466 66" enable-background="new 2.167 26.833 466 66" xml:space="preserve">
 
@@ -2166,15 +2166,14 @@
                     target: document.querySelector('.audioPlayer'),
                     syncInfo: {
                         svgs: ['svg01', 'svg02', 'svg03', 'svg04'],
-						sections: ['note_001', 'note_020', 'note_041', 'note_060', 'note_080'],
+						sections: ['note_001', 'note_020', 'note_041', 'note_060', 'note_080'], // insert last note + 1
                         noteKey: 'note_',
-                        barGroupKey: 'bar',
                         fillColor: '#ff0000',
                         start: 9.1,
                         end: 38.70,
                         speedAdjust: 0.09,
                         // speedAdjust: 0,
-                        mode: 'scroll', // scroll or twoBar
+                        mode: 'split', // scroll or split
                         noteSyncData: [
                             1, 1, 0.5, 0.5, 0.5, 0.5,
                             0.5, 1, 1, 0.5, 0.5, 0.5,
