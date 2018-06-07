@@ -25,6 +25,7 @@ export default class NoteSync {
         this.currentIndex = 0;
 
         this.player = null;
+        this.isLoaded = false;
 
         this.beat = ((this.endTime - this.startTime) / this.noteCount) + this.speedAdjust;
 
@@ -43,6 +44,10 @@ export default class NoteSync {
 
         this.onScroll = false;
 
+        this.sections = syncInfo.sections;
+        this.currentSection = 1;
+        this.sectionStart = 0;
+        this.sectionEnd = this.endTime;
 
 
     }
@@ -73,6 +78,46 @@ export default class NoteSync {
         });
     }
 
+    initNote() {
+        let index = 0;
+        this.svgs.forEach((value, idx) => {
+            const svgElement = document.querySelector('#' + value);
+            const bar = svgElement.querySelector('#bar_' + (idx + 1));
+
+            for (let i = 0; i < bar.childNodes.length; i++) {
+                if (bar.childNodes[i].nodeName !== '#text') {
+                    bar.childNodes[i].setAttribute('id', this.getNoteId(index));
+                    index++;
+                }
+            }
+        });
+    }
+
+    initSection() {
+
+        const start = this.sections[this.currentSection - 1];
+        console.log('- start: ', start);
+
+        console.log(this.noteMap.get(start));
+
+        const end = this.getPrevNoteId(this.sections[this.currentSection]);
+        console.log('-end: ', end);
+        console.log(this.noteMap.get(end));
+
+        const startNote = this.noteMap.get(start);
+        const endNote = this.noteMap.get(end);
+
+        this.currentIndex = startNote.index;
+        this.currentTime = startNote.syncStart;
+        this.sectionEnd = endNote.syncEnd;
+        /*  this.currentSyncStart = startNote.syncStart;
+          this.currentSyncEnd = startNote.syncEnd;*/
+
+        this.player.move(this.currentTime);
+        this.changeSync();
+
+    }
+
     updateSync() {
         this.currentIndex++;
         this.currentSyncStart = this.currentSyncEnd;
@@ -89,6 +134,7 @@ export default class NoteSync {
     startSync(player) {
         this.player = player;
 
+        this.sectionEnd = this.endTime;
         this.render();
     }
 
@@ -106,26 +152,36 @@ export default class NoteSync {
             this.updateSync();
         }
 
+        if (this.currentTime >= this.sectionEnd) {
+            this.player.element.play.className = 'controlsPlayButton';
+            this.player.stop();
+            this.endSync();
+        }
+
     }
 
     onSymbol(target) {
-        this.svgElement.querySelector('#' + target).style.fill = this.fillColor;
 
-        if (this.mode === 'scroll' && !this.onScroll) {
+        const targetElement = this.svgElement.querySelector('#' + target);
+        if (targetElement) {
+            targetElement.style.fill = this.fillColor;
 
-            setTimeout(() => {
-                window.location = '#' + target;
-            }, 100);
+            if (this.mode === 'scroll' && !this.onScroll) {
+
+                setTimeout(() => {
+                    window.location = '#' + target;
+                }, 100);
+            }
         }
 
-       /* this.playedNote.set(target, {
-            element: this.svgElement.querySelector('#' + target),
-            target: target,
-            index: this.currentIndex,
-            duration: this.noteSyncData[this.currentIndex] * this.beat,
-            syncStart: this.currentSyncStart,
-            syncEnd: this.currentSyncEnd
-        });*/
+        /* this.playedNote.set(target, {
+             element: this.svgElement.querySelector('#' + target),
+             target: target,
+             index: this.currentIndex,
+             duration: this.noteSyncData[this.currentIndex] * this.beat,
+             syncStart: this.currentSyncStart,
+             syncEnd: this.currentSyncEnd
+         });*/
     }
 
     offSymbol(target) {
@@ -145,6 +201,13 @@ export default class NoteSync {
         return index;
     }
 
+    getPrevNoteId(noteId) {
+        const note = noteId.split('_')[1];
+        // console.log('-note: ', note);
+        return this.getNoteId(note - 2);
+
+    }
+
     changeSync() {
         this.clearNote();
 
@@ -159,27 +222,40 @@ export default class NoteSync {
 
         this.moveSync();
 
-        console.log('- playedNote: ', this.playedNote);
+        // console.log('- playedNote: ', this.playedNote);
 
-     /*   console.log('- currentIndex: ', this.currentIndex);
-        console.log('- currentSyncStart: ', this.currentSyncStart);
-        console.log('- currentSyncEnd: ', this.currentSyncEnd);
-        console.log('- syncData: ', this.noteSyncData[this.currentIndex]);
-        console.log('- duration: ', this.noteSyncData[this.currentIndex] * this.beat);*/
+        /*   console.log('- currentIndex: ', this.currentIndex);
+           console.log('- currentSyncStart: ', this.currentSyncStart);
+           console.log('- currentSyncEnd: ', this.currentSyncEnd);
+           console.log('- syncData: ', this.noteSyncData[this.currentIndex]);
+           console.log('- duration: ', this.noteSyncData[this.currentIndex] * this.beat);*/
 
     }
 
     moveSync() {
         this.noteMap.forEach(value => {
             if (value.syncStart <= this.currentTime && value.syncEnd >= this.currentTime) {
-                console.log('==============moveSync==================');
-                this.onSymbol(value.target);
-                this.currentIndex = value.index;
-                this.currentSyncStart = value.syncStart;
-                this.currentSyncEnd = value.syncEnd;
+
+                this.moveNote(value);
             }
         });
     }
+
+    endSync() {
+        this.currentIndex = 0;
+        this.initSync();
+        this.clearNote();
+        this.syncPause = true;
+    }
+
+    moveNote(value) {
+        console.log('==============moveSync==================');
+        this.onSymbol(value.target);
+        this.currentIndex = value.index;
+        this.currentSyncStart = value.syncStart;
+        this.currentSyncEnd = value.syncEnd;
+    }
+
 
     render() {
         this.currentTime = this.player._playback.track.audio.currentTime;
@@ -200,25 +276,11 @@ export default class NoteSync {
 
     clearNote() {
         this.noteMap.forEach(value => {
-           // console.log(value);
-           value.element.style.fill = '#000';
+            // console.log(value);
+            value.element.style.fill = '#000';
         });
     }
 
-    initNote() {
-        let index = 0;
-        this.svgs.forEach((value, idx) => {
-            const svgElement = document.querySelector('#' + value);
-            const bar = svgElement.querySelector('#bar_' + (idx + 1));
-
-           for (let i = 0; i < bar.childNodes.length; i++) {
-               if (bar.childNodes[i].nodeName !== '#text') {
-                   bar.childNodes[i].setAttribute('id', this.getNoteId(index));
-                   index++;
-               }
-           }
-        });
-    }
 
 
 }
