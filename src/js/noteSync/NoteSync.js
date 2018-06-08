@@ -303,10 +303,11 @@ export default class NoteSync {
     }
 
     endSync() {
+        this.syncPause = true;
         this.currentIndex = 0;
         this.initSync();
         this.clearNote();
-        this.syncPause = true;
+
     }
 
     moveNote(value) {
@@ -324,6 +325,7 @@ export default class NoteSync {
 
 
     render() {
+
         this.currentTime = this.player._playback.track.audio.currentTime;
         console.log('~* currentTime: ', this.currentTime);
 

@@ -8,7 +8,7 @@
 import DOMBuilder from '../utils/DOMBuilder';
 import RangeSlider from '../utils/RangeSlider';
 
-export function initControls (target, player, noteSync) {
+export function initControls(target, player, noteSync) {
     console.log('-> initControls...');
 
     const bar = DOMBuilder.createElement('div', {
@@ -52,6 +52,11 @@ export function initControls (target, player, noteSync) {
             player.play();
             noteSync.syncPause = false;
             noteSync.startSync(player);
+
+            /*setTimeout(() => {
+                player._playback.track.audio.playbackRate = 2;
+            }, 500);*/
+
         } else {
             controlsPlayButton.className = 'controlsPlayButton';
             player.pause();
@@ -86,7 +91,7 @@ export function initControls (target, player, noteSync) {
             noteSync.currentSection--;
         }
 
-        sectionInfo.innerText =  noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
+        sectionInfo.innerText = noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
         // console.log('-currentSection: ', noteSync.currentSection);
 
     });
@@ -97,7 +102,7 @@ export function initControls (target, player, noteSync) {
         },
         parent: controls,
     });
-    sectionInfo.innerText =  noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
+    sectionInfo.innerText = noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
 
 
     const controlsNextButton = DOMBuilder.createElement('div', {
@@ -112,7 +117,7 @@ export function initControls (target, player, noteSync) {
         if (noteSync.currentSection < noteSync.sections.length - 1) {
             noteSync.currentSection++;
         }
-        sectionInfo.innerText =  noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
+        sectionInfo.innerText = noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
         // console.log('-currentSection: ', noteSync.currentSection);
 
     });
@@ -135,6 +140,68 @@ export function initControls (target, player, noteSync) {
 
     });
 
+
+    const halfPlayButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'halfPlayButton',
+        },
+        parent: controls,
+    });
+    halfPlayButton.setAttribute('selected', false);
+    halfPlayButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        controlsPlayButton.className = 'controlsPlayButton';
+        noteSync.endSync();
+
+        changeSelect({
+            element: e.target,
+            name: 'play',
+            trueCallBack: () => {
+                player.selectTrack(2);
+                onePlayButton.style.backgroundImage = 'url(./images/next.svg)';
+                onePlayButton.setAttribute('selected', false);
+            },
+            falseCallBack: () => {
+                player.selectTrack(0);
+                onePlayButton.style.backgroundImage = 'url(./images/next.svg)';
+                onePlayButton.setAttribute('selected', false);
+            }
+        });
+
+    });
+
+
+    const onePlayButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'onePlayButton',
+        },
+        parent: controls,
+    });
+    onePlayButton.setAttribute('selected', false);
+    onePlayButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        controlsPlayButton.className = 'controlsPlayButton';
+        noteSync.endSync();
+
+        changeSelect({
+            element: e.target,
+            name: 'next',
+            trueCallBack: () => {
+                player.selectTrack(1);
+                halfPlayButton.style.backgroundImage = 'url(./images/play.svg)';
+                halfPlayButton.setAttribute('selected', false);
+            },
+            falseCallBack: () => {
+                player.selectTrack(0);
+                halfPlayButton.style.backgroundImage = 'url(./images/play.svg)';
+                halfPlayButton.setAttribute('selected', false);
+            }
+        });
+        // console.log('----------------- playbackRate: ', player._playback.track.audio.playbackRate);
+
+    });
 
     const progressSlider = new RangeSlider(progressBar, {
         handle: true,
@@ -176,5 +243,18 @@ export function initControls (target, player, noteSync) {
     });
 
 
+}
 
+function changeSelect(params) {
+
+    if (params.element.getAttribute('selected') === 'true') {
+        params.element.setAttribute('selected', false);
+        params.element.style.backgroundImage = 'url(./images/' + params.name + '.svg)';
+        params.falseCallBack();
+
+    } else {
+        params.element.setAttribute('selected', true);
+        params.element.style.backgroundImage = 'url(./images/' + params.name + '_over.svg)';
+        params.trueCallBack();
+    }
 }

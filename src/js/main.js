@@ -13,8 +13,8 @@ import NoteSync from "./noteSync/NoteSync";
 window.musicNote = function (params) {
 
     const player = new AudioPlayer(params.tracks, {});
+    player.volume = 1;
     const noteSync = new NoteSync(params.syncInfo);
-
 
     initControls(params.target, player, noteSync);
 

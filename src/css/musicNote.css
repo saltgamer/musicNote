@@ -167,5 +167,38 @@
     background-repeat: no-repeat;
 }
 
+.audioPlayer > .bar > .controls > .halfPlayButton {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin: 0;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    left: 235px;
+
+    transform: rotate(90deg);
+
+    background-image: url('../images/play.svg');
+    background-repeat: no-repeat;
+}
+
+.audioPlayer > .bar > .controls > .onePlayButton {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin: 7px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    left: 235px;
+
+    transform: rotate(90deg);
+
+    background-image: url('../images/next.svg');
+    background-repeat: no-repeat;
+}
 
 
