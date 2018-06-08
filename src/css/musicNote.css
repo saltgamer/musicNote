@@ -9,7 +9,7 @@
     position: absolute;
     top: 30px;
     left: 350px;
-    width: 500px;
+    width: 590px;
     height: 30px;
     /*margin-left: auto;*/
     /*margin-right: auto;*/
@@ -113,8 +113,59 @@
 
 }
 
+.audioPlayer > .bar > .controls >.controlsPrevButton {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
 
+    left: 205px;
 
+    background-image: url('../images/prev.svg');
+    background-repeat: no-repeat;
+
+}
+
+.audioPlayer > .bar > .controls > .controlsNextButton {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    left: 220px;
+
+    background-image: url('../images/next.svg');
+    background-repeat: no-repeat;
+
+}
+
+.audioPlayer > .bar > .controls > .sectionInfo {
+    position: relative;
+    left: 213px;
+    color: #fff;
+    margin: 4px;
+}
+
+.audioPlayer > .bar > .controls > .sectionPlayButton {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    left: 225px;
+
+    background-image: url('../images/play.svg');
+    background-repeat: no-repeat;
+}
 
 
 

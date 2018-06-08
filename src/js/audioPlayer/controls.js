@@ -58,6 +58,7 @@ export function initControls (target, player, noteSync) {
             noteSync.syncPause = true;
         }
     });
+    player.element.play = controlsPlayButton;
 
     const controlsStopButton = DOMBuilder.createElement('div', {
         attrs: {
@@ -67,10 +68,71 @@ export function initControls (target, player, noteSync) {
     });
     controlsStopButton.addEventListener('click', () => {
         player.stop();
-        noteSync.currentIndex = 0;
-        noteSync.initSync();
-        noteSync.clearNote();
+        noteSync.endSync();
         controlsPlayButton.className = 'controlsPlayButton';
+    });
+    player.element.stop = controlsStopButton;
+
+    const controlsPrevButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'controlsPrevButton',
+        },
+        parent: controls,
+    });
+    controlsPrevButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (noteSync.currentSection > 1) {
+            noteSync.currentSection--;
+        }
+
+        sectionInfo.innerText =  noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
+        // console.log('-currentSection: ', noteSync.currentSection);
+
+    });
+
+    const sectionInfo = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'sectionInfo',
+        },
+        parent: controls,
+    });
+    sectionInfo.innerText =  noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
+
+
+    const controlsNextButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'controlsNextButton',
+        },
+        parent: controls,
+    });
+    controlsNextButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (noteSync.currentSection < noteSync.sections.length - 1) {
+            noteSync.currentSection++;
+        }
+        sectionInfo.innerText =  noteSync.currentSection + ' / ' + (noteSync.sections.length - 1);
+        // console.log('-currentSection: ', noteSync.currentSection);
+
+    });
+
+
+    const sectionPlayButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'sectionPlayButton',
+        },
+        parent: controls,
+    });
+    sectionPlayButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        controlsPlayButton.className = 'controlsPauseyButton';
+        player.play();
+        noteSync.syncPause = false;
+        noteSync.startSync(player);
+
+        noteSync.initSection();
+
     });
 
 
@@ -103,9 +165,9 @@ export function initControls (target, player, noteSync) {
 
     player.on('track:ended', (event) => {
         controlsPlayButton.className = 'controlsPlayButton';
-        noteSync.currentIndex = 0;
-        noteSync.initSync();
+        noteSync.endSync();
     });
+
 
     document.addEventListener('scroll', () => {
         console.log('-> scroll!');

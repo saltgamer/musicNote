@@ -20,6 +20,11 @@ export default class AudioPlayer extends EventEmmiter {
         this._resetPlaybackInfo();
         this._setTrack();
 
+        this.element = {
+            play: null,
+            stop: null
+        };
+
     }
 
     get isPlaying() {
@@ -162,6 +167,23 @@ export default class AudioPlayer extends EventEmmiter {
         return this;
     }
 
+    move(time) {
+        const audio = this._playback.track.audio;
+        // console.log('-move: ', audio.duration);
+        // console.log('-audio: ', audio.currentTime);
+
+        if (isNaN(audio.duration)) {
+            audio.addEventListener('loadedmetadata', () => {
+                audio.currentTime = time;
+            });
+
+        } else {
+            audio.currentTime = time;
+        }
+
+        return this;
+    }
+
     _setTrack() {
         if (this.isPlaying) {
             return this;
@@ -209,6 +231,8 @@ export default class AudioPlayer extends EventEmmiter {
 
         return this;
     }
+
+
 
 
 
