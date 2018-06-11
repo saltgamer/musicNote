@@ -321,7 +321,6 @@ export default class NoteSync {
 
     }
 
-
     render() {
 
         this.currentTime = this.player._playback.track.audio.currentTime;
@@ -347,6 +346,21 @@ export default class NoteSync {
         });
     }
 
+    showLyrics() {
+        this.svgs.forEach((value, idx) => {
+            const svgElement = this.svgElement.querySelector('#' + value);
+            svgElement.querySelector('#lyrics_' + (idx + 1)).style.display = 'block';
+        });
+
+    }
+
+    hideLyrics() {
+        this.svgs.forEach((value, idx) => {
+            const svgElement = this.svgElement.querySelector('#' + value);
+            svgElement.querySelector('#lyrics_' + (idx + 1)).style.display = 'none';
+        });
+
+    }
 
 
 }

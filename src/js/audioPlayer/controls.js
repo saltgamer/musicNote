@@ -328,6 +328,34 @@ export function initControls(target, player, noteSync) {
         pickMrButton.click();
     }
 
+    const lyricsButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'lyricsButton',
+        },
+        text: '가사',
+        parent: controls,
+    });
+    lyricsButton.setAttribute('selected', true);
+    lyricsButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const element = e.target;
+        if (element.getAttribute('selected') === 'false') {
+            element.style.backgroundColor = '#ff9900';
+            element.setAttribute('selected', true);
+
+            noteSync.showLyrics();
+
+
+        } else {
+            element.style.backgroundColor = '#eee';
+            element.setAttribute('selected', false);
+
+            noteSync.hideLyrics();
+        }
+
+    });
+
 
 }
 
@@ -344,3 +372,4 @@ function changeSelect(params) {
         params.trueCallBack();
     }
 }
+

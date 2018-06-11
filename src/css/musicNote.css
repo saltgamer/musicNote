@@ -186,7 +186,8 @@
     position: relative;
     left: 213px;
     color: #fff;
-    margin: 4px;
+    /*margin: 4px;*/
+    line-height: 30px;
 }
 
 .audioPlayer > .bar > .controls > .sectionPlayButton {
@@ -236,6 +237,22 @@
 
     background-image: url('../images/next.svg');
     background-repeat: no-repeat;
+}
+
+
+.audioPlayer > .bar > .controls > .lyricsButton {
+    position: relative;
+    width: 30px;
+    height: 24px;
+    cursor: pointer;
+    background-color: #ff9900;
+    font-size: 13px;
+    text-align: center;
+    border-radius: 25px;
+    line-height: 24px;
+
+    top: 3px;
+    left: 235px;
 }
 
 
