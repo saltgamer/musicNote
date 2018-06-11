@@ -19,6 +19,7 @@ export default class NoteSync {
         this.speedAdjust = syncInfo.speedAdjust;
 
         this.mode = syncInfo.mode;
+        this.currentPick = 'song'; // song or mr
 
         this.currentTime = 0;
         this.currentIndex = 0;
@@ -318,9 +319,6 @@ export default class NoteSync {
         this.currentSyncEnd = value.syncEnd;
 
 
-       /* if (this.mode === 'split') {
-            this.changeSVG(value.section);
-        }*/
     }
 
 

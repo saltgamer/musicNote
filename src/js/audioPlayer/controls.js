@@ -11,6 +11,37 @@ import RangeSlider from '../utils/RangeSlider';
 export function initControls(target, player, noteSync) {
     console.log('-> initControls...');
 
+    const pickContainer = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'pickContainer',
+        },
+        parent: document.body,
+    });
+
+
+    function changePick(element) {
+
+        element.style.backgroundColor = '#ff9900';
+
+        if (element.className === 'pickSongButton') {
+            pickMrButton.style.backgroundColor = '#333';
+        } else {
+            pickSongButton.style.backgroundColor = '#333';
+        }
+
+     /*   if (element.getAttribute('selected') === 'true') {
+            element.setAttribute('selected', false);
+            element.style.backgroundColor = '#333';
+
+        } else {
+            element.setAttribute('selected', true);
+            element.style.backgroundColor = '#ff9900';
+        }*/
+    }
+
+
+
+
     const bar = DOMBuilder.createElement('div', {
         attrs: {
             class: 'bar',
@@ -158,12 +189,20 @@ export function initControls(target, player, noteSync) {
             element: e.target,
             name: 'play',
             trueCallBack: () => {
-                player.selectTrack(2);
+                if (noteSync.currentPick === 'song') {
+                    player.selectTrack(2);
+                } else {
+                    player.selectTrack(5);
+                }
                 onePlayButton.style.backgroundImage = 'url(./images/next.svg)';
                 onePlayButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
-                player.selectTrack(0);
+                if (noteSync.currentPick === 'song') {
+                    player.selectTrack(0);
+                } else {
+                    player.selectTrack(3);
+                }
                 onePlayButton.style.backgroundImage = 'url(./images/next.svg)';
                 onePlayButton.setAttribute('selected', false);
             }
@@ -189,12 +228,20 @@ export function initControls(target, player, noteSync) {
             element: e.target,
             name: 'next',
             trueCallBack: () => {
-                player.selectTrack(1);
+                if (noteSync.currentPick === 'song') {
+                    player.selectTrack(1);
+                } else {
+                    player.selectTrack(4);
+                }
                 halfPlayButton.style.backgroundImage = 'url(./images/play.svg)';
                 halfPlayButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
-                player.selectTrack(0);
+                if (noteSync.currentPick === 'song') {
+                    player.selectTrack(0);
+                } else {
+                    player.selectTrack(3);
+                }
                 halfPlayButton.style.backgroundImage = 'url(./images/play.svg)';
                 halfPlayButton.setAttribute('selected', false);
             }
@@ -241,6 +288,45 @@ export function initControls(target, player, noteSync) {
         noteSync.onScroll = true;
 
     });
+
+    const pickSongButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'pickSongButton',
+        },
+        text: '노래',
+        parent: pickContainer,
+    });
+    pickSongButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        changePick(e.target);
+        controlsPlayButton.className = 'controlsPlayButton';
+        noteSync.endSync();
+        player.selectTrack(0);
+        noteSync.currentPick = 'song';
+    });
+
+    const pickMrButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'pickMrButton',
+        },
+        text: '반주',
+        parent: pickContainer,
+    });
+    pickMrButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        changePick(e.target);
+        changePick(e.target);
+        controlsPlayButton.className = 'controlsPlayButton';
+        noteSync.endSync();
+        player.selectTrack(3);
+        noteSync.currentPick = 'mr';
+    });
+
+    if (noteSync.currentPick === 'song') {
+        pickSongButton.click();
+    } else {
+        pickMrButton.click();
+    }
 
 
 }
