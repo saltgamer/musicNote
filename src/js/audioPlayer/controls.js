@@ -11,37 +11,6 @@ import RangeSlider from '../utils/RangeSlider';
 export function initControls(target, player, noteSync) {
     console.log('-> initControls...');
 
-    const pickContainer = DOMBuilder.createElement('div', {
-        attrs: {
-            class: 'pickContainer',
-        },
-        parent: document.body,
-    });
-
-
-    function changePick(element) {
-
-        element.style.backgroundColor = '#ff9900';
-
-        if (element.className === 'pickSongButton') {
-            pickMrButton.style.backgroundColor = '#333';
-        } else {
-            pickSongButton.style.backgroundColor = '#333';
-        }
-
-     /*   if (element.getAttribute('selected') === 'true') {
-            element.setAttribute('selected', false);
-            element.style.backgroundColor = '#333';
-
-        } else {
-            element.setAttribute('selected', true);
-            element.style.backgroundColor = '#ff9900';
-        }*/
-    }
-
-
-
-
     const bar = DOMBuilder.createElement('div', {
         attrs: {
             class: 'bar',
@@ -84,9 +53,9 @@ export function initControls(target, player, noteSync) {
             noteSync.syncPause = false;
             noteSync.startSync(player);
 
-            /*setTimeout(() => {
-                player._playback.track.audio.playbackRate = 2;
-            }, 500);*/
+            // setTimeout(() => {
+                player._playback.track.audio.playbackRate = noteSync.currentSpeed;
+            // }, 500);
 
         } else {
             controlsPlayButton.className = 'controlsPlayButton';
@@ -169,8 +138,11 @@ export function initControls(target, player, noteSync) {
 
         noteSync.initSection();
 
-    });
+        // setTimeout(() => {
+            player._playback.track.audio.playbackRate = noteSync.currentSpeed;
+        // }, 500);
 
+    });
 
     const halfPlayButton = DOMBuilder.createElement('div', {
         attrs: {
@@ -289,6 +261,24 @@ export function initControls(target, player, noteSync) {
 
     });
 
+    const pickContainer = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'pickContainer',
+        },
+        parent: document.body,
+    });
+
+    function changePick(element) {
+        element.style.backgroundColor = '#ff9900';
+
+        if (element.className === 'pickSongButton') {
+            pickMrButton.style.backgroundColor = '#333';
+        } else {
+            pickSongButton.style.backgroundColor = '#333';
+        }
+
+    }
+
     const pickSongButton = DOMBuilder.createElement('div', {
         attrs: {
             class: 'pickSongButton',
@@ -314,7 +304,6 @@ export function initControls(target, player, noteSync) {
     });
     pickMrButton.addEventListener('click', (e) => {
         e.preventDefault();
-        changePick(e.target);
         changePick(e.target);
         controlsPlayButton.className = 'controlsPlayButton';
         noteSync.endSync();
@@ -356,6 +345,79 @@ export function initControls(target, player, noteSync) {
 
     });
 
+    const minusButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'minusButton',
+        },
+        parent: controls,
+    });
+    minusButton.setAttribute('selected', false);
+    minusButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        player.stop();
+        controlsPlayButton.className = 'controlsPlayButton';
+        noteSync.endSync();
+
+        changeSelect({
+            element: e.target,
+            name: 'minus',
+            trueCallBack: () => {
+                // player.setSpeed(1 - 0.15);
+                noteSync.currentSpeed = 1.0 - 0.15;
+                plusButton.style.backgroundImage = 'url(./images/plus.svg)';
+                plusButton.setAttribute('selected', false);
+            },
+            falseCallBack: () => {
+                // player.setSpeed(1.0);
+                noteSync.currentSpeed = 1.0;
+                plusButton.style.backgroundImage = 'url(./images/plus.svg)';
+                plusButton.setAttribute('selected', false);
+            }
+        });
+        // console.log('----------------- playbackRate: ', player._playback.track.audio.playbackRate);
+
+    });
+
+
+    const plusButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'plusButton',
+        },
+        parent: controls,
+    });
+    plusButton.setAttribute('selected', false);
+    plusButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        player.stop();
+        controlsPlayButton.className = 'controlsPlayButton';
+        noteSync.endSync();
+
+        changeSelect({
+            element: e.target,
+            name: 'plus',
+            trueCallBack: () => {
+
+                // setTimeout(() => {
+                //     player.setSpeed(1.15);
+                noteSync.currentSpeed = 1.15;
+                // }, 1000);
+
+                minusButton.style.backgroundImage = 'url(./images/minus.svg)';
+                minusButton.setAttribute('selected', false);
+            },
+            falseCallBack: () => {
+                // player.setSpeed(1.0);
+                noteSync.currentSpeed = 1.0;
+                minusButton.style.backgroundImage = 'url(./images/minus.svg)';
+                minusButton.setAttribute('selected', false);
+            }
+        });
+        // console.log('----------------- playbackRate: ', player._playback.track.audio.playbackRate);
+
+    });
+
 
 }
 
@@ -372,4 +434,5 @@ function changeSelect(params) {
         params.trueCallBack();
     }
 }
+
 

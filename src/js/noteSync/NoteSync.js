@@ -24,6 +24,7 @@ export default class NoteSync {
         this.currentTime = 0;
         this.currentIndex = 0;
         this.currentNote = this.noteKey + '001';
+        this.currentSpeed = 1.0;
 
         this.player = null;
 
@@ -81,6 +82,8 @@ export default class NoteSync {
 
         if (this.mode === 'split') {
             this.showSVG([1, 2]);
+        } else {
+            this.showAllSVG();
         }
 
     }
@@ -137,6 +140,12 @@ export default class NoteSync {
 
     changeSVG() {
         this.showSVG(this.getSectionGroup());
+    }
+
+    showAllSVG() {
+        this.svgs.forEach((value, idx) => {
+            this.svgElement.querySelector('#' + value).style.display = 'block';
+        });
     }
 
     getSectionGroup() {

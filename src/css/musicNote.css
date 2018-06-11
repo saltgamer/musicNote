@@ -9,7 +9,7 @@
     position: absolute;
     top: 30px;
     left: 450px;
-    width: 590px;
+    width: 600px;
     height: 30px;
     /*margin-left: auto;*/
     /*margin-right: auto;*/
@@ -255,4 +255,35 @@
     left: 235px;
 }
 
+.audioPlayer > .bar > .controls > .minusButton {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    left: 240px;
+
+    background-image: url('../images/minus.svg');
+    background-repeat: no-repeat;
+
+}
+
+.audioPlayer > .bar > .controls > .plusButton {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    opacity: 0.8;
+    cursor: pointer;
+    background-size: 100% 100%;
+
+    left: 245px;
+
+    background-image: url('../images/plus.svg');
+    background-repeat: no-repeat;
+
+}
 

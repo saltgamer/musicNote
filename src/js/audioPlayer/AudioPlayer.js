@@ -69,6 +69,8 @@ export default class AudioPlayer extends EventEmmiter {
         const track = this._playback.track;
         console.log(`-> Playing track id=${this.currentTrackIndex} - ${track.src}`);
 
+        console.log('-> playbackRate: ', track.audio.playbackRate);
+
         if (track.audio && track.isBuffered()) {
             track.audio.play();
             this._playback.playing = true;
@@ -102,6 +104,9 @@ export default class AudioPlayer extends EventEmmiter {
     }
 
     stop() {
+        if (!this.isPlaying) {
+            return this;
+        }
         this._playback.playing = false;
         const track = this._playback.track;
         track.audio.pause();
