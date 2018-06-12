@@ -36,19 +36,23 @@ export default class AudioPlayer extends EventEmmiter {
     }
 
     get volume() {
-        return this._gain.gain.value;
+        const track = this._playback.track;
+        return track.audio.volume;
+
     }
 
     set volume(value) {
         if (value > 1 && value < 0) {
             throw Error('-> Volume must be in range from 0 to 1');
         }
+        const track = this._playback.track;
         if (value === 0) {
             this.mute();
         } else if (this.muted) {
             this.unmute();
         }
-        this._gain.gain.value = value;
+        track.audio.volume = value;
+
     }
 
     play(id = null) {
@@ -64,6 +68,8 @@ export default class AudioPlayer extends EventEmmiter {
 
         const track = this._playback.track;
         console.log(`-> Playing track id=${this.currentTrackIndex} - ${track.src}`);
+
+        console.log('-> playbackRate: ', track.audio.playbackRate);
 
         if (track.audio && track.isBuffered()) {
             track.audio.play();
@@ -98,11 +104,13 @@ export default class AudioPlayer extends EventEmmiter {
     }
 
     stop() {
+        if (!this.isPlaying) {
+            return this;
+        }
         this._playback.playing = false;
         const track = this._playback.track;
         track.audio.pause();
         track.audio.currentTime = 0;
-
 
         return this;
     }
@@ -129,26 +137,24 @@ export default class AudioPlayer extends EventEmmiter {
         return this;
     }
 
-    playNext() {
+    playSelect(index) {
         if (this.isPlaying) {
             this.stop();
         }
         this._resetPlaybackInfo();
 
-        this.currentTrackIndex += 1;
+        this.currentTrackIndex = index;
         this.play();
 
         return this;
     }
 
-    playPrev() {
+    selectTrack(index) {
         if (this.isPlaying) {
             this.stop();
         }
-        this._resetPlaybackInfo();
-
-        this.currentTrackIndex -= 1;
-        this.play();
+        // this._resetPlaybackInfo();
+        this.currentTrackIndex = index;
 
         return this;
     }
