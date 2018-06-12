@@ -123,7 +123,7 @@ export default class NoteSync {
           this.currentSyncEnd = startNote.syncEnd;*/
 
         this.player.move(this.currentTime);
-        this.changeSync();
+        this.changeSync(this.currentTime);
 
     }
 
@@ -279,13 +279,17 @@ export default class NoteSync {
 
     }
 
-    changeSync() {
-        this.clearNote();
-
+    changeSync(time) {
         if (!this.player) {
             return;
         }
-        this.currentTime = this.player._playback.track.audio.currentTime;
+        this.clearNote();
+
+        if (time) {
+            this.currentTime = time;
+        } else {
+            this.currentTime = this.player._playback.track.audio.currentTime;
+        }
         console.log('-----------------------changeSync----------------------');
         console.log('- currentTime: ', this.currentTime);
         this.currentIndex = 0;
@@ -305,8 +309,7 @@ export default class NoteSync {
 
     moveSync() {
         this.noteMap.forEach(value => {
-            if (value.syncStart <= this.currentTime && value.syncEnd >= this.currentTime) {
-
+            if (value.syncStart <= this.currentTime && value.syncEnd > this.currentTime) {
                 this.moveNote(value);
             }
         });
@@ -371,5 +374,18 @@ export default class NoteSync {
 
     }
 
+    showSyllable() {
+        this.svgs.forEach((value, idx) => {
+            const svgElement = this.svgElement.querySelector('#' + value);
+            svgElement.querySelector('#syllable_' + (idx + 1)).style.display = 'block';
+        });
+    }
+
+    hideSyllable() {
+        this.svgs.forEach((value, idx) => {
+            const svgElement = this.svgElement.querySelector('#' + value);
+            svgElement.querySelector('#syllable_' + (idx + 1)).style.display = 'none';
+        });
+    }
 
 }
