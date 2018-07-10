@@ -30,11 +30,14 @@ export default class NoteSync {
 
         this.beat = ((this.endTime - this.startTime) / this.noteCount) + this.speedAdjust;
 
+        if (syncInfo.bridge) this.initBridge(syncInfo.bridge);
+
+
         this.initNote();
         this.initSync();
 
-        console.log('- noteCount: ', this.noteCount);
-        console.log('- beat: ', this.beat);
+        console.log('-> noteCount: ', this.noteCount);
+        console.log('-> beat: ', this.beat);
 
         this.syncPause = false;
         this.noteMap = new Map();
@@ -48,8 +51,9 @@ export default class NoteSync {
         this.sectionEnd = this.endTime;
 
         this.initNoteMap();
-        console.log('-- noteMap: ', this.noteMap);
+        console.log('--> noteMap: ', this.noteMap);
 
+        this.hideSyllable();
 
 
     }
@@ -69,15 +73,32 @@ export default class NoteSync {
             _start = (idx === 0 ? _start : _end);
             _end = (idx === 0 ? _end : _end + (this.noteSyncData[idx] * this.beat));
 
+            let isBridge = false,
+                interval = 0;
+
+            if (this.bridge) {
+                for (let i = 0; i < this.bridge.length; i++) {
+                    if (this.isBridegNote(target, this.bridge[i].startNote, this.bridge[i].endNote)) {
+                        console.log('--> isBridegNote: ', target);
+                        /*   _start = _start + this.bridge[i].interval;
+                           _end = _end + this.bridge[i].interval;*/
+                        isBridge = true;
+                        interval = this.bridge[i].interval;
+                    }
+                }
+            }
+
+            // console.log('------_start: ', _start);
             this.noteMap.set(target, {
                 element: this.svgElement.querySelector('#' + target),
                 target: target,
                 index: idx,
                 duration: value,
-                syncStart: _start,
-                syncEnd: _end,
+                syncStart: (isBridge ? _start + interval : _start),
+                syncEnd: (isBridge ? _end + interval : _end),
                 section: this.getCurrentSection(target)
             });
+
         });
 
         if (this.mode === 'split') {
@@ -154,7 +175,7 @@ export default class NoteSync {
         if (note.section % 2 === 1) {
             return [note.section, note.section + 1];
         } else {
-            return [note.section-1, note.section];
+            return [note.section - 1, note.section];
         }
 
     }
@@ -169,11 +190,11 @@ export default class NoteSync {
             end = end.split('_')[1];
             currentNote = noteId.split('_')[1];
 
-           /* console.log('--------------------------------------------');
-            console.log('- noteId: ', noteId);
-            console.log('- start: ', start);
-            console.log('- end: ', end);
-            console.log('--------------------------------------------');*/
+            /* console.log('--------------------------------------------');
+             console.log('- noteId: ', noteId);
+             console.log('- start: ', start);
+             console.log('- end: ', end);
+             console.log('--------------------------------------------');*/
 
             if (parseInt(start) <= parseInt(currentNote) && parseInt(end) >= parseInt(currentNote)) {
                 result = idx + 1;
@@ -188,6 +209,15 @@ export default class NoteSync {
         this.currentIndex++;
         this.currentSyncStart = this.currentSyncEnd;
         this.currentSyncEnd += this.noteSyncData[this.currentIndex] * this.beat;
+
+        if (this.bridge) {
+            for (let i = 0; i < this.bridge.length; i++) {
+                if (this.getNoteId(this.currentIndex) === this.bridge[i].startNote) {
+                    this.currentSyncStart += this.bridge[i].interval;
+                    this.currentSyncEnd += this.bridge[i].interval;
+                }
+            }
+        }
 
         console.log('-----------------------updateSync----------------------');
         console.log('- currentSyncStart: ', this.currentSyncStart);
@@ -224,8 +254,10 @@ export default class NoteSync {
             this.endSync();
         }
 
-        if (this.mode === 'split') {
-            this.changeSVG();
+        if (this.noteMap.get(this.currentNote)) {
+            if (this.mode === 'split') {
+                this.changeSVG();
+            }
         }
 
     }
@@ -386,6 +418,35 @@ export default class NoteSync {
             const svgElement = this.svgElement.querySelector('#' + value);
             svgElement.querySelector('#syllable_' + (idx + 1)).style.display = 'none';
         });
+    }
+
+    initBridge(bridge) {
+        this.bridge = [];
+
+        bridge.forEach((value) => {
+            this.bridge.push({
+                interval: value.end - value.start,
+                startNote: value.startNote,
+                endNote: value.endNote
+            });
+
+        });
+
+        console.log('--> bridge: ', this.bridge);
+
+    }
+
+    isBridegNote(target, startNote, endNote) {
+        let isBridge = false;
+        target = target.replace(this.noteKey, '');
+        startNote = startNote.replace(this.noteKey, '');
+        endNote = endNote.replace(this.noteKey, '');
+
+        if (startNote <= target && endNote >= target) {
+            isBridge = true;
+        }
+
+        return isBridge;
     }
 
 }
