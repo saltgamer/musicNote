@@ -6,28 +6,45 @@
  ***/
 
 .audioPlayer {
-    position: absolute;
-    top: 30px;
-    left: 450px;
-    width: 640px;
-    height: 30px;
+    position: relative;
+    top: 0;
+    left: 0;
+    /*width: 800px;*/
+    height: 45px;
     /*margin-left: auto;*/
     /*margin-right: auto;*/
     overflow: hidden;
-    background-color: #333;
-    border-radius: 5px;
+    /*background-color: #333;*/
+    border-radius: 10px;
+
+    background: #4a98e0; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#54a2e2, #397fbb); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#54a2e2, #397fbb); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#54a2e2, #397fbb); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#54a2e2, #397fbb); /* Standard syntax */
+
+    box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.allLabel {
+    position: relative;
+    margin-top: 6px;
+    width: 75px;
+    height: 32px;
 }
 
 .pickContainer {
     position: absolute;
-    top: 30px;
-    left: 340px;
+    top: 0;
+    right: 10px;
     width: 100px;
     height: 30px;
     text-align: center;
     line-height: 26px;
     font-size: 14px;
     user-select: none;
+
+    display: none;
 
 }
 
@@ -65,9 +82,9 @@
 
 .audioPlayer > .bar > .progress {
     position: absolute;
-    top: 9px;
-    left: 50px;
-    width: 180px;
+    top: 17px;
+    left: 130px;
+    width: 130px;
     height: 10px;
 }
 
@@ -104,48 +121,48 @@
 
 .audioPlayer > .bar > .controls {
     user-select: none;
-    padding-left: 15px;
+    padding-left: 7px;
     display: flex;
 }
 
 
 .audioPlayer > .bar > .controls >.controlsPlayButton {
-    width: 25px;
-    height: 25px;
-    margin: 2px;
-    opacity: 0.8;
+    width: 30px;
+    height: 30px;
+    margin: 7px;
+    /*opacity: 0.8;*/
     cursor: pointer;
     background-size: 100% 100%;
 
-    background-image: url('../images/play.svg');
+    background-image: url('../images/btn_play.png');
     background-repeat: no-repeat;
 
 }
 
 .audioPlayer > .bar > .controls >.controlsPauseyButton {
-    width: 25px;
-    height: 25px;
-    margin: 2px;
-    opacity: 0.8;
+    width: 30px;
+    height: 30px;
+    margin: 7px;
+    /*opacity: 0.8;*/
     cursor: pointer;
     background-size: 100% 100%;
 
-    background-image: url('../images/pause.svg');
+    background-image: url('../images/btn_pause.png');
     background-repeat: no-repeat;
 
 }
 
 .audioPlayer > .bar > .controls >.controlsStopButton {
     position: relative;
-    width: 20px;
-    height: 20px;
-    margin: 5px;
-    opacity: 0.8;
+    width: 30px;
+    height: 30px;
+    margin: 7px;
+    /*opacity: 0.8;*/
     cursor: pointer;
     background-size: 100% 100%;
-    left: 190px;
+    left: 135px;
 
-    background-image: url('../images/stop.svg');
+    background-image: url('../images/btn_stop.png');
     background-repeat: no-repeat;
 
 }
@@ -164,6 +181,8 @@
     background-image: url('../images/prev.svg');
     background-repeat: no-repeat;
 
+    display: none;
+
 }
 
 .audioPlayer > .bar > .controls > .controlsNextButton {
@@ -180,6 +199,8 @@
     background-image: url('../images/next.svg');
     background-repeat: no-repeat;
 
+    display: none;
+
 }
 
 .audioPlayer > .bar > .controls > .sectionInfo {
@@ -188,6 +209,7 @@
     color: #fff;
     /*margin: 4px;*/
     line-height: 30px;
+    display: none;
 }
 
 .audioPlayer > .bar > .controls > .sectionPlayButton {
@@ -201,41 +223,40 @@
 
     left: 225px;
 
-    background-image: url('../images/play.svg');
-    background-repeat: no-repeat;
+    /*background-image: url('../images/play.svg');*/
+    /*background-repeat: no-repeat;*/
+    display: none;
 }
 
 .audioPlayer > .bar > .controls > .halfPlayButton {
     position: relative;
-    width: 25px;
-    height: 25px;
-    margin: 0;
-    opacity: 0.8;
+    width: 30px;
+    height: 30px;
+    margin: 7px;
+    /*opacity: 0.8;*/
     cursor: pointer;
     background-size: 100% 100%;
 
-    left: 235px;
+    left: 148px;
 
-    transform: rotate(90deg);
 
-    background-image: url('../images/play.svg');
+    background-image: url('../images/btn_half.png');
     background-repeat: no-repeat;
 }
 
 .audioPlayer > .bar > .controls > .onePlayButton {
     position: relative;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     margin: 7px;
-    opacity: 0.8;
+    /*opacity: 0.8;*/
     cursor: pointer;
     background-size: 100% 100%;
 
-    left: 235px;
+    left: 140px;
 
-    transform: rotate(90deg);
 
-    background-image: url('../images/next.svg');
+    background-image: url('../images/btn_one.png');
     background-repeat: no-repeat;
 }
 
@@ -253,6 +274,8 @@
 
     top: 3px;
     left: 235px;
+
+    display: none;
 }
 
 .audioPlayer > .bar > .controls > .syllableButton {
@@ -268,6 +291,8 @@
 
     top: 3px;
     left: 240px;
+
+    display: none;
 }
 
 .audioPlayer > .bar > .controls > .minusButton {
@@ -283,6 +308,8 @@
 
     background-image: url('../images/minus.svg');
     background-repeat: no-repeat;
+
+    display: none;
 
 }
 
@@ -300,5 +327,43 @@
     background-image: url('../images/plus.svg');
     background-repeat: no-repeat;
 
+    display: none;
+
 }
 
+.splitLine {
+    width: 2px;
+    height: 45px;
+    background-color: #2861a3;
+    position: relative;
+    left: 136px;
+}
+
+.sectionIconBox {
+    position: relative;
+    left: 152px;
+    top: 7px;
+}
+
+.sectionIcon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-right: 3px;
+}
+
+.audioPlayer > .bar > .controls > .loopPlayButton {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin: 7px;
+    opacity: 0.5;
+    /*cursor: pointer;*/
+    background-size: 100% 100%;
+
+    left: 156px;
+
+    background-image: url('../images/btn_loop.png');
+    background-repeat: no-repeat;
+
+}

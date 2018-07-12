@@ -352,6 +352,10 @@ export default class NoteSync {
         this.currentIndex = 0;
         this.initSync();
         this.clearNote();
+        this.currentNote = this.noteKey + '001';
+        if (this.mode === 'split') {
+            this.changeSVG();
+        }
 
     }
 

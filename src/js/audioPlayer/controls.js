@@ -39,6 +39,16 @@ export function initControls(target, player, noteSync) {
         parent: bar,
     });
 
+    const allLabel = DOMBuilder.createElement('img', {
+        attrs: {
+            class: 'allLabel',
+            src: './images/allLabel.png'
+        },
+        parent: controls,
+    });
+
+
+
     const controlsPlayButton = DOMBuilder.createElement('div', {
         attrs: {
             class: 'controlsPlayButton',
@@ -75,8 +85,25 @@ export function initControls(target, player, noteSync) {
         player.stop();
         noteSync.endSync();
         controlsPlayButton.className = 'controlsPlayButton';
+
     });
     player.element.stop = controlsStopButton;
+
+    const splitLine = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'splitLine',
+        },
+        parent: controls,
+    });
+
+    const partLabel = DOMBuilder.createElement('img', {
+        attrs: {
+            class: 'allLabel',
+            src: './images/partLabel.png'
+        },
+        parent: controls,
+    });
+    partLabel.style.left = '145px';
 
     const controlsPrevButton = DOMBuilder.createElement('div', {
         attrs: {
@@ -144,6 +171,26 @@ export function initControls(target, player, noteSync) {
 
     });
 
+
+    initSections(controls, controlsPlayButton, noteSync, player);
+
+    const splitLine2 = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'splitLine',
+        },
+        parent: controls,
+    });
+    splitLine2.style.left = '156px';
+
+    const loopPlayButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'loopPlayButton',
+        },
+        parent: controls,
+    });
+
+
+
     const halfPlayButton = DOMBuilder.createElement('div', {
         attrs: {
             class: 'halfPlayButton',
@@ -183,6 +230,19 @@ export function initControls(target, player, noteSync) {
 
     });
 
+    // console.log('--> playlist: ', player.playlist);
+    const tracks = player.playlist._tracks;
+    if (noteSync.currentPick === 'song') {
+        if (tracks[2]._src === '') {
+            halfPlayButton.style.pointerEvents = 'none';
+            halfPlayButton.style.opacity = 0.5;
+        }
+    } else {
+        if (tracks[5]._src === '') {
+            halfPlayButton.style.pointerEvents = 'none';
+            halfPlayButton.style.opacity = 0.5;
+        }
+    }
 
     const onePlayButton = DOMBuilder.createElement('div', {
         attrs: {
@@ -223,6 +283,18 @@ export function initControls(target, player, noteSync) {
         // console.log('----------------- playbackRate: ', player._playback.track.audio.playbackRate);
 
     });
+
+    if (noteSync.currentPick === 'song') {
+        if (tracks[1]._src === '') {
+            onePlayButton.style.pointerEvents = 'none';
+            onePlayButton.style.opacity = 0.5;
+        }
+    } else {
+        if (tracks[4]._src === '') {
+            onePlayButton.style.pointerEvents = 'none';
+            onePlayButton.style.opacity = 0.5;
+        }
+    }
 
     const progressSlider = new RangeSlider(progressBar, {
         handle: true,
@@ -466,6 +538,48 @@ function changeSelect(params) {
         params.element.setAttribute('selected', true);
         params.trueCallBack();
     }
+}
+
+function initSections(target, playerButton, noteSync, player) {
+
+    const sectionIconBox = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'sectionIconBox',
+        },
+        parent: target
+    });
+
+    const sectionWidth = ((noteSync.sections.length - 1) * 33);
+    sectionIconBox.style.width = sectionWidth + 'px';
+    target.parentNode.parentNode.style.width = (520 + sectionWidth) + 'px';
+
+    for (let i = 0; i < noteSync.sections.length - 1; i++) {
+        const sectionIcon = DOMBuilder.createElement('img', {
+            attrs: {
+                class: 'sectionIcon',
+                section: i + 1,
+                src: './images/sectionIcon_' + (i + 1) + '.png'
+            },
+            parent: sectionIconBox
+        });
+
+        sectionIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            noteSync.currentSection = e.target.getAttribute('section');
+
+            playerButton.className = 'controlsPauseyButton';
+            player.play();
+            noteSync.syncPause = false;
+            noteSync.startSync(player);
+
+            noteSync.initSection();
+
+            player._playback.track.audio.playbackRate = noteSync.currentSpeed;
+
+        });
+    }
+
+
 }
 
 
