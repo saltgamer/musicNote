@@ -7,6 +7,7 @@
 
 import DOMBuilder from '../utils/DOMBuilder';
 import RangeSlider from '../utils/RangeSlider';
+import {$qsa, getURLParameter} from '../utils';
 
 export function initControls(target, player, noteSync) {
     console.log('-> initControls...');
@@ -85,6 +86,7 @@ export function initControls(target, player, noteSync) {
         player.stop();
         noteSync.endSync();
         controlsPlayButton.className = 'controlsPlayButton';
+        clearSectionIcon();
 
     });
     player.element.stop = controlsStopButton;
@@ -190,7 +192,6 @@ export function initControls(target, player, noteSync) {
     });
 
 
-
     const halfPlayButton = DOMBuilder.createElement('div', {
         attrs: {
             class: 'halfPlayButton',
@@ -212,8 +213,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(5);
                 }
-                e.target.style.backgroundImage = 'url(./images/play_over.svg)';
-                onePlayButton.style.backgroundImage = 'url(./images/next.svg)';
+                e.target.style.backgroundImage = 'url(./images/btn_half_over.png)';
+                onePlayButton.style.backgroundImage = 'url(./images/btn_one.png)';
                 onePlayButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
@@ -222,8 +223,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(3);
                 }
-                e.target.style.backgroundImage = 'url(./images/play.svg)';
-                onePlayButton.style.backgroundImage = 'url(./images/next.svg)';
+                e.target.style.backgroundImage = 'url(./images/btn_half.png)';
+                onePlayButton.style.backgroundImage = 'url(./images/btn_one.png)';
                 onePlayButton.setAttribute('selected', false);
             }
         });
@@ -265,8 +266,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(4);
                 }
-                e.target.style.backgroundImage = 'url(./images/next_over.svg)';
-                halfPlayButton.style.backgroundImage = 'url(./images/play.svg)';
+                e.target.style.backgroundImage = 'url(./images/btn_one_over.png)';
+                halfPlayButton.style.backgroundImage = 'url(./images/btn_half.png)';
                 halfPlayButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
@@ -275,8 +276,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(3);
                 }
-                e.target.style.backgroundImage = 'url(./images/next.svg)';
-                halfPlayButton.style.backgroundImage = 'url(./images/play.svg)';
+                e.target.style.backgroundImage = 'url(./images/btn_one.png)';
+                halfPlayButton.style.backgroundImage = 'url(./images/btn_half.png)';
                 halfPlayButton.setAttribute('selected', false);
             }
         });
@@ -525,6 +526,15 @@ export function initControls(target, player, noteSync) {
 
     });
 
+    const countBox = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'countBox',
+        },
+        parent: target.parentNode.parentNode,
+    });
+
+    initMode(pickSongButton, syllableButton, pickMrButton);
+
 
 }
 
@@ -541,6 +551,11 @@ function changeSelect(params) {
 }
 
 function initSections(target, playerButton, noteSync, player) {
+
+    if (noteSync.sections.length > 10) {
+        alert('[!] 현재 버전은 최대 10개 구간만 지원합니다!');
+        return;
+    }
 
     const sectionIconBox = DOMBuilder.createElement('div', {
         attrs: {
@@ -565,6 +580,9 @@ function initSections(target, playerButton, noteSync, player) {
 
         sectionIcon.addEventListener('click', (e) => {
             e.preventDefault();
+            clearSectionIcon();
+            e.target.src = e.target.src.replace('.png', '_over.png');
+
             noteSync.currentSection = e.target.getAttribute('section');
 
             playerButton.className = 'controlsPauseyButton';
@@ -579,6 +597,31 @@ function initSections(target, playerButton, noteSync, player) {
         });
     }
 
+
+}
+
+function clearSectionIcon() {
+    const sectionIcons = $qsa('.sectionIcon');
+    sectionIcons.forEach((icon) => {
+       icon.src = icon.src.replace('_over', '');
+    });
+}
+
+
+function initMode(pickSongButton, syllableButton, pickMrButton) {
+    const mode = getURLParameter('mode');
+
+    switch (mode) {
+        case 'sing':
+            pickSongButton.click();
+            break;
+        case 'syllable':
+            syllableButton.click();
+            break;
+        case 'mr':
+            pickMrButton.click();
+            break;
+    }
 
 }
 

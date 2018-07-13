@@ -24,6 +24,8 @@
     background: linear-gradient(#54a2e2, #397fbb); /* Standard syntax */
 
     box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.3);
+
+    margin-bottom: 60px;
 }
 
 .allLabel {
@@ -365,5 +367,17 @@
 
     background-image: url('../images/btn_loop.png');
     background-repeat: no-repeat;
+
+}
+
+.countBox {
+    position: absolute;
+    top: 60px;
+    left: 28px;
+    width: 50px;
+    height: 73px;
+    /*background-image: url('../images/count_3.png');*/
+    background-repeat: no-repeat;
+    display: none;
 
 }
