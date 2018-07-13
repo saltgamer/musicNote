@@ -533,6 +533,8 @@ export function initControls(target, player, noteSync) {
         parent: target.parentNode.parentNode,
     });
 
+    initSectionIcons(noteSync);
+
     initMode(pickSongButton, syllableButton, pickMrButton);
 
 
@@ -621,6 +623,13 @@ function initMode(pickSongButton, syllableButton, pickMrButton) {
         case 'mr':
             pickMrButton.click();
             break;
+    }
+
+}
+
+function initSectionIcons(noteSync) {
+    for (let i = 0; i < noteSync.sections.length - 1; i++) {
+
     }
 
 }

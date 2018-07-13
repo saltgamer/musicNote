@@ -56,7 +56,6 @@ export default class NoteSync {
 
         this.hideSyllable();
 
-
     }
 
     initSync() {
@@ -478,5 +477,7 @@ export default class NoteSync {
 
 
     }
+
+
 
 }
