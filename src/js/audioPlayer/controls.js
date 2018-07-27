@@ -619,6 +619,7 @@ function initMode(pickSongButton, syllableButton, pickMrButton) {
             break;
         case 'syllable':
             syllableButton.click();
+            pickMrButton.click();
             break;
         case 'mr':
             pickMrButton.click();
