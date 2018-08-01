@@ -461,15 +461,15 @@ export default class NoteSync {
 
         if ((this.startTime - 3) <= this.currentTime && (this.startTime - 2) >= this.currentTime) {
             // console.log('#################################---> count 3 ##################################');
-            countBox.style.backgroundImage = 'url(./images/count_3.png)';
+            countBox.style.backgroundImage = 'url(../../include/images/musicFlash/count_3.png)';
             countBox.style.display = 'block';
         } else if ((this.startTime - 2) <= this.currentTime && (this.startTime - 1) >= this.currentTime) {
             // console.log('#################################---> count 2 ##################################');
-            countBox.style.backgroundImage = 'url(./images/count_2.png)';
+            countBox.style.backgroundImage = 'url(../../include/images/musicFlash/count_2.png)';
             countBox.style.display = 'block';
         } else if ((this.startTime - 1) <= this.currentTime && (this.startTime) >= this.currentTime) {
             // console.log('#################################---> count 1 ##################################');
-            countBox.style.backgroundImage = 'url(./images/count_1.png)';
+            countBox.style.backgroundImage = 'url(../../include/images/musicFlash/count_1.png)';
             countBox.style.display = 'block';
         } else {
             countBox.style.display = 'none';

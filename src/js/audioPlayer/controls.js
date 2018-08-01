@@ -43,7 +43,7 @@ export function initControls(target, player, noteSync) {
     const allLabel = DOMBuilder.createElement('img', {
         attrs: {
             class: 'allLabel',
-            src: './images/allLabel.png'
+            src: '../../include/images/musicFlash/allLabel.png'
         },
         parent: controls,
     });
@@ -101,7 +101,7 @@ export function initControls(target, player, noteSync) {
     const partLabel = DOMBuilder.createElement('img', {
         attrs: {
             class: 'allLabel',
-            src: './images/partLabel.png'
+            src: '../../include/images/musicFlash/partLabel.png'
         },
         parent: controls,
     });
@@ -213,8 +213,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(5);
                 }
-                e.target.style.backgroundImage = 'url(./images/btn_half_over.png)';
-                onePlayButton.style.backgroundImage = 'url(./images/btn_one.png)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlashimages/btn_half_over.png)';
+                onePlayButton.style.backgroundImage = 'url(../../include/images/musicFlash/btn_one.png)';
                 onePlayButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
@@ -223,8 +223,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(3);
                 }
-                e.target.style.backgroundImage = 'url(./images/btn_half.png)';
-                onePlayButton.style.backgroundImage = 'url(./images/btn_one.png)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlash/btn_half.png)';
+                onePlayButton.style.backgroundImage = 'url(../../include/images/musicFlash/btn_one.png)';
                 onePlayButton.setAttribute('selected', false);
             }
         });
@@ -266,8 +266,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(4);
                 }
-                e.target.style.backgroundImage = 'url(./images/btn_one_over.png)';
-                halfPlayButton.style.backgroundImage = 'url(./images/btn_half.png)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlash/btn_one_over.png)';
+                halfPlayButton.style.backgroundImage = 'url(../../include/images/musicFlash/btn_half.png)';
                 halfPlayButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
@@ -276,8 +276,8 @@ export function initControls(target, player, noteSync) {
                 } else {
                     player.selectTrack(3);
                 }
-                e.target.style.backgroundImage = 'url(./images/btn_one.png)';
-                halfPlayButton.style.backgroundImage = 'url(./images/btn_half.png)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlash/btn_one.png)';
+                halfPlayButton.style.backgroundImage = 'url(../../include/images/musicFlash/btn_half.png)';
                 halfPlayButton.setAttribute('selected', false);
             }
         });
@@ -471,15 +471,15 @@ export function initControls(target, player, noteSync) {
             trueCallBack: () => {
                 // player.setSpeed(1 - 0.15);
                 noteSync.currentSpeed = 1.0 - 0.15;
-                e.target.style.backgroundImage = 'url(./images/minus_over.svg)';
-                plusButton.style.backgroundImage = 'url(./images/plus.svg)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlash/minus_over.svg)';
+                plusButton.style.backgroundImage = 'url(../../include/images/musicFlash/plus.svg)';
                 plusButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
                 // player.setSpeed(1.0);
                 noteSync.currentSpeed = 1.0;
-                e.target.style.backgroundImage = 'url(./images/minus.svg)';
-                plusButton.style.backgroundImage = 'url(./images/plus.svg)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlash/minus.svg)';
+                plusButton.style.backgroundImage = 'url(../../include/images/musicFlash/plus.svg)';
                 plusButton.setAttribute('selected', false);
             }
         });
@@ -510,15 +510,15 @@ export function initControls(target, player, noteSync) {
                 //     player.setSpeed(1.15);
                 noteSync.currentSpeed = 1.15;
                 // }, 1000);
-                e.target.style.backgroundImage = 'url(./images/plus_over.svg)';
-                minusButton.style.backgroundImage = 'url(./images/minus.svg)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlash/plus_over.svg)';
+                minusButton.style.backgroundImage = 'url(../../include/images/musicFlash/minus.svg)';
                 minusButton.setAttribute('selected', false);
             },
             falseCallBack: () => {
                 // player.setSpeed(1.0);
                 noteSync.currentSpeed = 1.0;
-                e.target.style.backgroundImage = 'url(./images/plus.svg)';
-                minusButton.style.backgroundImage = 'url(./images/minus.svg)';
+                e.target.style.backgroundImage = 'url(../../include/images/musicFlash/plus.svg)';
+                minusButton.style.backgroundImage = 'url(../../include/images/musicFlash/minus.svg)';
                 minusButton.setAttribute('selected', false);
             }
         });
@@ -575,7 +575,7 @@ function initSections(target, playerButton, noteSync, player) {
             attrs: {
                 class: 'sectionIcon',
                 section: i + 1,
-                src: './images/sectionIcon_' + (i + 1) + '.png'
+                src: '../../include/images/musicFlash/sectionIcon_' + (i + 1) + '.png'
             },
             parent: sectionIconBox
         });
