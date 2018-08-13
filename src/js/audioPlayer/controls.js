@@ -604,9 +604,13 @@ function initSections(target, playerButton, noteSync, player) {
 
 function clearSectionIcon() {
     const sectionIcons = $qsa('.sectionIcon');
-    sectionIcons.forEach((icon) => {
+    /*sectionIcons.forEach((icon) => {
        icon.src = icon.src.replace('_over', '');
-    });
+    });*/
+    for (let i = 0; i< sectionIcons.length; i++) {
+        const icon = sectionIcons[i];
+        icon.src = icon.src.replace('_over', '');
+    }
 }
 
 

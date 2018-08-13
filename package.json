@@ -26,6 +26,6 @@
     "whatwg-fetch": "^2.0.4"
   },
   "dependencies": {
-    "npm": "^6.1.0"
+    "npm": "^6.3.0"
   }
 }

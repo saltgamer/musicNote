@@ -116,8 +116,9 @@ export default class NoteSync {
             const bar = svgElement.querySelector('#bar_' + (idx + 1));
 
             for (let i = 0; i < bar.childNodes.length; i++) {
-                if (bar.childNodes[i].nodeName !== '#text') {
+                if (bar.childNodes[i].nodeName !== '#text' && bar.childNodes[i].getAttribute('pass') !== 'true') {
                     bar.childNodes[i].setAttribute('id', this.getNoteId(index));
+                    bar.childNodes[i].setAttribute('svgId', idx + 1);
                     index++;
                 }
             }
@@ -149,12 +150,17 @@ export default class NoteSync {
     }
 
     showSVG(index) {
+        console.log('--------------showSVG:', index);
         this.svgs.forEach((value, idx) => {
             this.svgElement.querySelector('#' + value).style.display = 'none';
         });
 
         index.forEach(value => {
-            this.svgElement.querySelector('#' + this.svgs[value - 1]).style.display = 'block';
+            const svg = this.svgElement.querySelector('#' + this.svgs[value - 1]);
+            if (svg) {
+                svg.style.display = 'block';
+            }
+
         });
 
     }
@@ -172,35 +178,56 @@ export default class NoteSync {
     getSectionGroup() {
         const note = this.noteMap.get(this.currentNote);
         // console.log('- section: ', section % 2);
-        if (note.section % 2 === 1) {
-            return [note.section, note.section + 1];
+        const svgId =  parseInt($qs('#' + note.target).getAttribute('svgId'), 10);
+
+        if (svgId % 2 === 1) {
+            return [svgId, svgId + 1];
         } else {
-            return [note.section - 1, note.section];
+            return [svgId - 1, svgId];
         }
 
     }
 
     getCurrentSection(noteId) {
         let start, end, currentNote, result;
-        this.svgs.forEach((value, idx) => {
-            start = this.sections[idx];
-            end = this.getPrevNoteId(this.sections[idx + 1]);
+        // this.svgs.forEach((value, idx) => {
+        /* this.sections.forEach((value, idx) => {
+             start = value;
+             end = this.getPrevNoteId(this.sections[idx + 1]);
+
+             start = start.split('_')[1];
+             end = end.split('_')[1];
+             currentNote = noteId.split('_')[1];
+
+              console.log('--------------------------------------------');
+              console.log('- noteId: ', noteId);
+              console.log('- start: ', start);
+              console.log('- end: ', end);
+              console.log('--------------------------------------------');
+
+             if (parseInt(start) <= parseInt(currentNote) && parseInt(end) >= parseInt(currentNote)) {
+                 result = idx + 1;
+             }
+         });*/
+
+        for (let i = 0; i < this.sections.length - 1; i++) {
+            start = this.sections[i];
+            end = this.getPrevNoteId(this.sections[i + 1]);
 
             start = start.split('_')[1];
             end = end.split('_')[1];
             currentNote = noteId.split('_')[1];
 
-            /* console.log('--------------------------------------------');
-             console.log('- noteId: ', noteId);
-             console.log('- start: ', start);
-             console.log('- end: ', end);
-             console.log('--------------------------------------------');*/
+          /*  console.log('--------------------------------------------');
+            console.log('- noteId: ', noteId);
+            console.log('- start: ', start);
+            console.log('- end: ', end);
+            console.log('--------------------------------------------');*/
 
             if (parseInt(start) <= parseInt(currentNote) && parseInt(end) >= parseInt(currentNote)) {
-                result = idx + 1;
+                result = i + 1;
             }
-        });
-
+        }
         return result;
 
     }
@@ -260,6 +287,7 @@ export default class NoteSync {
             }
         }
 
+
     }
 
     onSymbol(target) {
@@ -305,6 +333,7 @@ export default class NoteSync {
     }
 
     getPrevNoteId(noteId) {
+        // console.log('--> getPrevNoteId: ', noteId);
         const note = noteId.split('_')[1];
         // console.log('-note: ', note);
         return this.getNoteId(note - 2);
@@ -377,6 +406,7 @@ export default class NoteSync {
         this.noteChecker();
 
         this.countChecker();
+
 
         this.onScroll = false;
 
@@ -477,7 +507,6 @@ export default class NoteSync {
 
 
     }
-
 
 
 }
