@@ -51,6 +51,8 @@ export default class NoteSync {
         this.currentSection = 1;
         this.sectionEnd = this.endTime;
 
+        this.loopMode = false;
+
         this.initNoteMap();
         console.log('--> noteMap: ', this.noteMap);
 

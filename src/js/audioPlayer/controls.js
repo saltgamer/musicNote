@@ -191,6 +191,11 @@ export function initControls(target, player, noteSync) {
         parent: controls,
     });
 
+   /* loopPlayButton.addEventListener('click', (e) => {
+
+
+    });
+*/
 
     const halfPlayButton = DOMBuilder.createElement('div', {
         attrs: {
@@ -554,10 +559,10 @@ function changeSelect(params) {
 
 function initSections(target, playerButton, noteSync, player) {
 
-    if (noteSync.sections.length > 10) {
+   /* if (noteSync.sections.length > 10) {
         alert('[!] 현재 버전은 최대 10개 구간만 지원합니다!');
         return;
-    }
+    }*/
 
     const sectionIconBox = DOMBuilder.createElement('div', {
         attrs: {
@@ -571,19 +576,30 @@ function initSections(target, playerButton, noteSync, player) {
     target.parentNode.parentNode.style.width = (520 + sectionWidth) + 'px';
 
     for (let i = 0; i < noteSync.sections.length - 1; i++) {
-        const sectionIcon = DOMBuilder.createElement('img', {
+       /* const sectionIcon = DOMBuilder.createElement('img', {
             attrs: {
                 class: 'sectionIcon',
                 section: i + 1,
                 src: '../../include/images/musicFlash/sectionIcon_' + (i + 1) + '.png'
             },
             parent: sectionIconBox
+        });*/
+        const sectionIcon = DOMBuilder.createElement('div', {
+            attrs: {
+                class: 'sectionIconStyle',
+                section: i + 1,
+                // src: '../../include/images/musicFlash/sectionIcon_' + (i + 1) + '.png'
+            },
+            text: i + 1,
+            parent: sectionIconBox
         });
 
         sectionIcon.addEventListener('click', (e) => {
             e.preventDefault();
             clearSectionIcon();
-            e.target.src = e.target.src.replace('.png', '_over.png');
+            // e.target.src = e.target.src.replace('.png', '_over.png');
+            e.target.style.backgroundColor = '#ff6600';
+            e.target.style.color = '#fff';
 
             noteSync.currentSection = e.target.getAttribute('section');
 
@@ -603,13 +619,17 @@ function initSections(target, playerButton, noteSync, player) {
 }
 
 function clearSectionIcon() {
-    const sectionIcons = $qsa('.sectionIcon');
+    const sectionIcons = $qsa('.sectionIconStyle');
     /*sectionIcons.forEach((icon) => {
        icon.src = icon.src.replace('_over', '');
     });*/
     for (let i = 0; i< sectionIcons.length; i++) {
         const icon = sectionIcons[i];
-        icon.src = icon.src.replace('_over', '');
+      /*  icon.src = icon.src.replace('_over', '');*/
+        icon.style.backgroundColor = '#fff';
+        icon.style.color = '#4a98e0';
+
+
     }
 }
 
