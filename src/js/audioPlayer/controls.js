@@ -648,6 +648,9 @@ function initMode(pickSongButton, syllableButton, pickMrButton) {
         case 'mr':
             pickMrButton.click();
             break;
+        case 'repeat':
+
+            break;
     }
 
 }

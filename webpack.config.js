@@ -15,6 +15,13 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     // devtool: 'inline-source-map',
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        compress: true,
+        // openPage: 'wiseCamp',
+        openPage: 'index.html',
+        port: 7777
+    },
     module: {
         rules: [
             {
