@@ -5,6 +5,7 @@
  * creator : saltgamer
  ***/
 import {$qs} from '../utils';
+import StateMachine from '../FSM';
 
 export default class NoteSync {
     constructor(syncInfo) {
@@ -20,7 +21,7 @@ export default class NoteSync {
         this.speedAdjust = syncInfo.speedAdjust;
 
         this.mode = syncInfo.mode;
-        this.currentPick = 'song'; // song or mr
+        this.currentPick = 'song'; // song, mr, repeat
 
         this.currentTime = 0;
         this.currentIndex = 0;
@@ -51,12 +52,18 @@ export default class NoteSync {
         this.currentSection = 1;
         this.sectionEnd = this.endTime;
 
+        this.sectionPlay = false;
+
         this.loopMode = false;
 
         this.initNoteMap();
         console.log('--> noteMap: ', this.noteMap);
 
         this.hideSyllable();
+
+        // this.repeatInit();
+
+        console.log('~~~> this: ', this);
 
     }
 
@@ -180,7 +187,7 @@ export default class NoteSync {
     getSectionGroup() {
         const note = this.noteMap.get(this.currentNote);
         // console.log('- section: ', section % 2);
-        const svgId =  parseInt($qs('#' + note.target).getAttribute('svgId'), 10);
+        const svgId = parseInt($qs('#' + note.target).getAttribute('svgId'), 10);
 
         if (svgId % 2 === 1) {
             return [svgId, svgId + 1];
@@ -220,11 +227,11 @@ export default class NoteSync {
             end = end.split('_')[1];
             currentNote = noteId.split('_')[1];
 
-          /*  console.log('--------------------------------------------');
-            console.log('- noteId: ', noteId);
-            console.log('- start: ', start);
-            console.log('- end: ', end);
-            console.log('--------------------------------------------');*/
+            /*  console.log('--------------------------------------------');
+              console.log('- noteId: ', noteId);
+              console.log('- start: ', start);
+              console.log('- end: ', end);
+              console.log('--------------------------------------------');*/
 
             if (parseInt(start) <= parseInt(currentNote) && parseInt(end) >= parseInt(currentNote)) {
                 result = i + 1;
@@ -275,12 +282,39 @@ export default class NoteSync {
             console.log('- currentSyncEnd: ', this.currentSyncEnd);
             this.offSymbol(this.getNoteId(this.currentIndex));
             this.updateSync();
+
+            /* if (this.currentPick === 'repeat') {
+                 this.repeatCheck(this.getNoteId(this.currentIndex));
+             }*/
+
         }
 
+        // console.log('~> currentTime: ', this.currentTime);
+        // console.log('~> sectionEnd: ', this.sectionEnd);
         if (this.currentTime >= this.sectionEnd) {
             this.player.element.play.className = 'controlsPlayButton';
             this.player.stop();
             this.endSync();
+
+            if (this.currentPick === 'repeat') {
+                this.repeatSessionCheck();
+            }
+
+            /*   if (this.currentPick === 'repeat') {
+                   this.player.selectTrack(3);
+                   this.player.play();
+                   this.syncPause = false;
+                   this.startSync(this.player);
+
+                   this.initSection();
+                   this.player._playback.track.audio.playbackRate = this.currentSpeed;
+
+                   this.repeat.repeatPlay = true;
+
+                   this.repeatCheck();
+
+               }*/
+
         }
 
         if (this.noteMap.get(this.currentNote)) {
@@ -409,6 +443,10 @@ export default class NoteSync {
 
         this.countChecker();
 
+        /*  if (this.currentPick === 'repeat') {
+
+              this.repeatSessionCheck();
+          }*/
 
         this.onScroll = false;
 
@@ -505,6 +543,111 @@ export default class NoteSync {
             countBox.style.display = 'block';
         } else {
             countBox.style.display = 'none';
+        }
+
+    }
+
+    setRepeatEnd() {
+        const end = this.getPrevNoteId(this.sections[this.currentSection]),
+            endNote = this.noteMap.get(end);
+        this.sectionEnd = endNote.syncEnd;
+
+        console.log('~~> sectionEnd: ', this.sectionEnd);
+    }
+
+    repeatInit() {
+        console.log('~~~> repeatInit...');
+        this.repeat = {
+            songPlay: true,
+            mrPlay: false
+        };
+
+        this.stateMachine = new StateMachine({
+            idle: {
+                start: () => {
+                    this.player.stop();
+                    this.endSync();
+                    this.syncPause = true;
+                    this.repeat.songPlay = true;
+
+                    this.stateMachine.changeStateTo('mrPlay');
+                    this.stateMachine.dispatch('playMr');
+                }
+            },
+            songPlay: {
+                playSong: () => {
+                    this.player.selectTrack(0);
+                    this.syncPause = false;
+                    this.player._playback.track.audio.playbackRate = this.currentSpeed;
+                    this.player.play();
+                    this.player.element.play.className = 'controlsPauseButton';
+
+                    this.initSection();
+                    this.repeat.songPlay = true;
+                }
+
+            },
+            mrPlay: {
+                playMr: () => {
+                    this.player.selectTrack(3);
+                    this.syncPause = false;
+                    this.player._playback.track.audio.playbackRate = this.currentSpeed;
+                    this.player.play();
+                    this.player.element.play.className = 'controlsPauseButton';
+
+                    this.initSection();
+                    this.repeat.mrPlay = true;
+
+
+                }
+
+            },
+            end: {
+                stop: () => {
+                    this.player.element.play.className = 'controlsPlayButton';
+                    this.player.stop();
+                    this.endSync();
+                    this.syncPause = true;
+
+                    this.currentSection = 1;
+                    this.clearRepeatFlag();
+                    this.player.selectTrack(0);
+                }
+            }
+        });
+
+    }
+
+    clearRepeatFlag() {
+        this.repeat.songPlay = false;
+        this.repeat.mrPlay = false;
+    }
+
+    repeatSessionCheck() {
+        console.log('~> repeatSessionCheck: ', this.currentSection);
+        console.log('~> repeat: ', this.repeat);
+
+        if (this.currentSection > this.sections.length - 1) {
+            this.stateMachine.changeStateTo('end');
+            this.stateMachine.dispatch('stop');
+        }
+
+        if (this.currentSection === 1) {
+            this.stateMachine.dispatch('start');
+        } else {
+
+            if (!this.repeat.songPlay && !this.repeat.mrPlay) {
+                this.stateMachine.changeStateTo('songPlay');
+                this.stateMachine.dispatch('playSong');
+            } else if (this.repeat.songPlay && !this.repeat.mrPlay) {
+                this.stateMachine.changeStateTo('mrPlay');
+                this.stateMachine.dispatch('playMr');
+            }
+        }
+
+        if (!this.sectionPlay && this.repeat.songPlay && this.repeat.mrPlay) {
+            this.currentSection++;
+            this.clearRepeatFlag();
         }
 
 

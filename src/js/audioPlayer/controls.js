@@ -49,7 +49,6 @@ export function initControls(target, player, noteSync) {
     });
 
 
-
     const controlsPlayButton = DOMBuilder.createElement('div', {
         attrs: {
             class: 'controlsPlayButton',
@@ -58,15 +57,24 @@ export function initControls(target, player, noteSync) {
     });
     controlsPlayButton.addEventListener('click', () => {
         if (!player.isPlaying) {
-            controlsPlayButton.className = 'controlsPauseyButton';
-
+            controlsPlayButton.className = 'controlsPauseButton';
+            if (noteSync.currentPick === 'repeat') {
+                player.selectTrack(0);
+            }
             player.play();
             noteSync.syncPause = false;
             noteSync.startSync(player);
 
             // setTimeout(() => {
-                player._playback.track.audio.playbackRate = noteSync.currentSpeed;
+            player._playback.track.audio.playbackRate = noteSync.currentSpeed;
             // }, 500);
+
+            if (noteSync.currentPick === 'repeat') {
+                noteSync.sectionPlay = false;
+                noteSync.stateMachine.changeStateTo('idle');
+                noteSync.currentSection = 1;
+                noteSync.setRepeatEnd();
+            }
 
         } else {
             controlsPlayButton.className = 'controlsPlayButton';
@@ -160,7 +168,7 @@ export function initControls(target, player, noteSync) {
     });
     sectionPlayButton.addEventListener('click', (e) => {
         e.preventDefault();
-        controlsPlayButton.className = 'controlsPauseyButton';
+        controlsPlayButton.className = 'controlsPauseButton';
         player.play();
         noteSync.syncPause = false;
         noteSync.startSync(player);
@@ -168,7 +176,7 @@ export function initControls(target, player, noteSync) {
         noteSync.initSection();
 
         // setTimeout(() => {
-            player._playback.track.audio.playbackRate = noteSync.currentSpeed;
+        player._playback.track.audio.playbackRate = noteSync.currentSpeed;
         // }, 500);
 
     });
@@ -191,11 +199,11 @@ export function initControls(target, player, noteSync) {
         parent: controls,
     });
 
-   /* loopPlayButton.addEventListener('click', (e) => {
+    /* loopPlayButton.addEventListener('click', (e) => {
 
 
-    });
-*/
+     });
+ */
 
     const halfPlayButton = DOMBuilder.createElement('div', {
         attrs: {
@@ -353,8 +361,13 @@ export function initControls(target, player, noteSync) {
 
         if (element.className === 'pickSongButton') {
             pickMrButton.style.backgroundColor = '#333';
-        } else {
+            repeatButton.style.backgroundColor = '#333';
+        } else if (element.className === 'pickMrButton') {
             pickSongButton.style.backgroundColor = '#333';
+            repeatButton.style.backgroundColor = '#333';
+        } else if (element.className === 'repeatButton') {
+            pickSongButton.style.backgroundColor = '#333';
+            pickMrButton.style.backgroundColor = '#333';
         }
 
     }
@@ -391,10 +404,36 @@ export function initControls(target, player, noteSync) {
         noteSync.currentPick = 'mr';
     });
 
-    if (noteSync.currentPick === 'song') {
-        pickSongButton.click();
-    } else {
-        pickMrButton.click();
+    const repeatButton = DOMBuilder.createElement('div', {
+        attrs: {
+            class: 'repeatButton',
+        },
+        text: '따라부르기',
+        parent: pickContainer,
+    });
+    repeatButton.addEventListener('click', (e) => {
+        console.log('~~> repeatButton click!!');
+        e.preventDefault();
+        changePick(e.target);
+
+        controlsPlayButton.className = 'controlsPlayButton';
+        noteSync.endSync();
+        player.selectTrack(0);
+        noteSync.currentPick = 'repeat';
+        noteSync.repeatInit();
+
+    });
+
+    switch (noteSync.currentPick) {
+        case 'song':
+            pickSongButton.click();
+            break;
+        case 'mr':
+            pickMrButton.click();
+            break;
+        case 'repeat':
+            repeatButton.click();
+            break;
     }
 
     const lyricsButton = DOMBuilder.createElement('div', {
@@ -415,6 +454,7 @@ export function initControls(target, player, noteSync) {
                 e.target.style.backgroundColor = '#ff9900';
                 syllableButton.style.backgroundColor = '#eee';
                 syllableButton.setAttribute('selected', false);
+
             },
             falseCallBack: () => {
                 noteSync.hideLyrics();
@@ -422,6 +462,7 @@ export function initControls(target, player, noteSync) {
                 e.target.style.backgroundColor = '#eee';
                 syllableButton.style.backgroundColor = '#eee';
                 syllableButton.setAttribute('selected', false);
+
             }
         });
     });
@@ -444,6 +485,13 @@ export function initControls(target, player, noteSync) {
                 e.target.style.backgroundColor = '#ff9900';
                 lyricsButton.style.backgroundColor = '#eee';
                 lyricsButton.setAttribute('selected', false);
+
+
+                controlsPlayButton.className = 'controlsPlayButton';
+                noteSync.endSync();
+                player.selectTrack(6);
+                // noteSync.currentPick = 'mr';
+
             },
             falseCallBack: () => {
                 noteSync.hideSyllable();
@@ -451,6 +499,10 @@ export function initControls(target, player, noteSync) {
                 e.target.style.backgroundColor = '#eee';
                 lyricsButton.style.backgroundColor = '#eee';
                 lyricsButton.setAttribute('selected', false);
+
+                controlsPlayButton.className = 'controlsPlayButton';
+                noteSync.endSync();
+                player.selectTrack(0);
             }
         });
 
@@ -540,7 +592,7 @@ export function initControls(target, player, noteSync) {
 
     initSectionIcons(noteSync);
 
-    initMode(pickSongButton, syllableButton, pickMrButton);
+    initMode(pickSongButton, syllableButton, pickMrButton, repeatButton);
 
 
 }
@@ -559,10 +611,10 @@ function changeSelect(params) {
 
 function initSections(target, playerButton, noteSync, player) {
 
-   /* if (noteSync.sections.length > 10) {
-        alert('[!] 현재 버전은 최대 10개 구간만 지원합니다!');
-        return;
-    }*/
+    /* if (noteSync.sections.length > 10) {
+         alert('[!] 현재 버전은 최대 10개 구간만 지원합니다!');
+         return;
+     }*/
 
     const sectionIconBox = DOMBuilder.createElement('div', {
         attrs: {
@@ -576,14 +628,14 @@ function initSections(target, playerButton, noteSync, player) {
     target.parentNode.parentNode.style.width = (520 + sectionWidth) + 'px';
 
     for (let i = 0; i < noteSync.sections.length - 1; i++) {
-       /* const sectionIcon = DOMBuilder.createElement('img', {
-            attrs: {
-                class: 'sectionIcon',
-                section: i + 1,
-                src: '../../include/images/musicFlash/sectionIcon_' + (i + 1) + '.png'
-            },
-            parent: sectionIconBox
-        });*/
+        /* const sectionIcon = DOMBuilder.createElement('img', {
+             attrs: {
+                 class: 'sectionIcon',
+                 section: i + 1,
+                 src: '../../include/images/musicFlash/sectionIcon_' + (i + 1) + '.png'
+             },
+             parent: sectionIconBox
+         });*/
         const sectionIcon = DOMBuilder.createElement('div', {
             attrs: {
                 class: 'sectionIconStyle',
@@ -603,7 +655,15 @@ function initSections(target, playerButton, noteSync, player) {
 
             noteSync.currentSection = e.target.getAttribute('section');
 
-            playerButton.className = 'controlsPauseyButton';
+            if (noteSync.currentPick === 'repeat') {
+                noteSync.sectionPlay = true;
+                player.selectTrack(0);
+                noteSync.clearRepeatFlag();
+                noteSync.repeat.songPlay = true;
+            }
+
+
+            playerButton.className = 'controlsPauseButton';
             player.play();
             noteSync.syncPause = false;
             noteSync.startSync(player);
@@ -623,9 +683,9 @@ function clearSectionIcon() {
     /*sectionIcons.forEach((icon) => {
        icon.src = icon.src.replace('_over', '');
     });*/
-    for (let i = 0; i< sectionIcons.length; i++) {
+    for (let i = 0; i < sectionIcons.length; i++) {
         const icon = sectionIcons[i];
-      /*  icon.src = icon.src.replace('_over', '');*/
+        /*  icon.src = icon.src.replace('_over', '');*/
         icon.style.backgroundColor = '#fff';
         icon.style.color = '#4a98e0';
 
@@ -634,7 +694,7 @@ function clearSectionIcon() {
 }
 
 
-function initMode(pickSongButton, syllableButton, pickMrButton) {
+function initMode(pickSongButton, syllableButton, pickMrButton, repeatButton) {
     const mode = getURLParameter('mode');
 
     switch (mode) {
@@ -643,13 +703,13 @@ function initMode(pickSongButton, syllableButton, pickMrButton) {
             break;
         case 'syllable':
             syllableButton.click();
-            pickMrButton.click();
+            // pickMrButton.click();
             break;
         case 'mr':
             pickMrButton.click();
             break;
         case 'repeat':
-
+            repeatButton.click();
             break;
     }
 

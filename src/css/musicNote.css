@@ -38,8 +38,8 @@
 .pickContainer {
     position: absolute;
     top: 0;
-    right: 10px;
-    width: 100px;
+    right: 60px;
+    width: 160px;
     height: 30px;
     text-align: center;
     line-height: 26px;
@@ -51,6 +51,7 @@
 }
 
 .pickContainer > .pickSongButton {
+    position: relative;
     width: 50px;
     height: 30px;
     background-color: #333333;
@@ -64,7 +65,20 @@
 }
 
 .pickContainer > .pickMrButton {
+    position: relative;
     width: 50px;
+    height: 30px;
+    background-color: #333333;
+    /*border-top-right-radius: 25px;*/
+    /*border-bottom-right-radius: 25px;*/
+    cursor: pointer;
+    display: inline-block;
+    color: #fff;
+}
+
+.pickContainer > .repeatButton {
+    position: absolute;
+    width: 70px;
     height: 30px;
     background-color: #333333;
     border-top-right-radius: 25px;
@@ -141,7 +155,7 @@
 
 }
 
-.audioPlayer > .bar > .controls >.controlsPauseyButton {
+.audioPlayer > .bar > .controls >.controlsPauseButton {
     width: 30px;
     height: 30px;
     margin: 7px;

@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "test",
-    "build": "webpack --mode production",
+    "build": "webpack",
     "start": "webpack-dev-server --mode development --open"
   },
   "keywords": [
@@ -28,6 +28,6 @@
     "whatwg-fetch": "^2.0.4"
   },
   "dependencies": {
-    "npm": "^6.3.0"
+    "npm": "^6.4.1"
   }
 }
